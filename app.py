@@ -146,4 +146,5 @@ if __name__ == '__main__':
     print("\nStarte Server auf http://localhost:5000")
     print("Drücke CTRL+C zum Beenden\n")
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Note: debug=False for security. Set to True only in trusted development environments.
+    app.run(debug=False, host='0.0.0.0', port=5000)
