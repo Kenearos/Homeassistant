@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Assistant Overview - Web GUI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card h2::before {
+            content: "📖";
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        
+        .instructions {
+            grid-column: 1 / -1;
+        }
+        
+        .step {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+        }
+        
+        .step h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .step p {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .step code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .checkbox-group label {
+            margin: 0;
+            font-weight: normal;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .report-summary {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .stat-box .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-box .label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .info-box strong {
+            color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 Home Assistant Overview - Web GUI</h1>
+            <p>Vollständige Übersicht über Ihre Home Assistant Installation mit integrierter Schritt-für-Schritt Anleitung</p>
+        </div>
+        
+        <div class="main-content">
+            <!-- Anleitung / Instructions -->
+            <div class="card instructions">
+                <h2>Schritt-für-Schritt Anleitung</h2>
+                
+                <div class="step">
+                    <h3>Schritt 1: Home Assistant Long-Lived Access Token erstellen</h3>
+                    <p>
+                        1. Öffnen Sie Ihre Home Assistant Web-Oberfläche<br>
+                        2. Klicken Sie auf Ihr Profil (unten links)<br>
+                        3. Scrollen Sie nach unten zu "Long-Lived Access Tokens"<br>
+                        4. Klicken Sie auf "Create Token"<br>
+                        5. Geben Sie einen Namen ein (z.B. "Overview Tool")<br>
+                        6. Kopieren Sie den generierten Token (wird nur einmal angezeigt!)
+                    </p>
+                </div>
+                
+                <div class="step">
+                    <h3>Schritt 2: Verbindungsdaten eingeben</h3>
+                    <p>
+                        Geben Sie in den Feldern rechts Ihre Home Assistant URL und den Token ein:<br>
+                        - <strong>URL:</strong> <code>http://homeassistant.local:8123</code> oder Ihre IP-Adresse<br>
+                        - <strong>Token:</strong> Der zuvor erstellte Long-Lived Access Token<br>
+                        - Optional: Aktivieren Sie "Konfiguration speichern" um die Daten für später zu speichern
+                    </p>
+                </div>
+                
+                <div class="step">
+                    <h3>Schritt 3: Verbindung testen</h3>
+                    <p>
+                        Klicken Sie auf "Verbindung testen" um sicherzustellen, dass die Verbindung funktioniert.
+                        Bei Erfolg erscheint eine grüne Bestätigung.
+                    </p>
+                </div>
+                
+                <div class="step">
+                    <h3>Schritt 4: Bericht erstellen</h3>
+                    <p>
+                        Klicken Sie auf "Bericht generieren" um eine vollständige Übersicht zu erstellen.
+                        Der Bericht enthält:<br>
+                        - Alle Entitäten sortiert nach Domain<br>
+                        - Installierte Komponenten<br>
+                        - Verfügbare Services<br>
+                        - System-Informationen<br>
+                        - Statistiken
+                    </p>
+                </div>
+                
+                <div class="step">
+                    <h3>Schritt 5: Bericht herunterladen (optional)</h3>
+                    <p>
+                        Nach der Generierung können Sie den Bericht als JSON- oder Text-Datei herunterladen
+                        und für Ihre Dokumentation verwenden.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Formular -->
+            <div class="card">
+                <h2 style="margin-bottom: 10px;">Verbindung einrichten</h2>
+                
+                {% if has_config %}
+                <div class="info-box">
+                    <strong>ℹ️ Gespeicherte Konfiguration gefunden!</strong><br>
+                    Die vorherigen Einstellungen wurden automatisch geladen.
+                </div>
+                {% endif %}
+                
+                <div id="alerts"></div>
+                
+                <form id="connectionForm">
+                    <div class="form-group">
+                        <label for="url">Home Assistant URL</label>
+                        <input type="text" id="url" name="url" 
+                               placeholder="http://homeassistant.local:8123" 
+                               value="{{ saved_url }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="token">Long-Lived Access Token</label>
+                        <input type="password" id="token" name="token" 
+                               placeholder="Ihr Token..." required>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="saveConfig" name="saveConfig">
+                        <label for="saveConfig">Konfiguration speichern (für spätere Verwendung)</label>
+                    </div>
+                    
+                    <div>
+                        <button type="button" class="btn btn-secondary" onclick="testConnection()">
+                            Verbindung testen
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="generateReport()">
+                            Bericht generieren
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 10px;">Bitte warten...</p>
+                </div>
+                
+                <div class="report-summary" id="reportSummary">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">Bericht Zusammenfassung</h3>
+                    <div class="stat-grid" id="statsGrid"></div>
+                    
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-success" onclick="downloadReport('json')">
+                            📥 Als JSON herunterladen
+                        </button>
+                        <button class="btn btn-success" onclick="downloadReport('txt')">
+                            📥 Als Text herunterladen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentReport = null;
+        
+        function showAlert(message, type) {
+            const alertsDiv = document.getElementById('alerts');
+            const alertClass = type === 'success' ? 'alert-success' : 
+                             type === 'error' ? 'alert-error' : 'alert-info';
+            
+            const alert = document.createElement('div');
+            alert.className = `alert ${alertClass}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            alertsDiv.innerHTML = '';
+            alertsDiv.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+        
+        async function testConnection() {
+            const url = document.getElementById('url').value;
+            const token = document.getElementById('token').value;
+            const saveConfig = document.getElementById('saveConfig').checked;
+            
+            if (!url || !token) {
+                showAlert('Bitte füllen Sie alle Felder aus!', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/api/test-connection', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url, token, save_config: saveConfig })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('✓ ' + result.message, 'success');
+                } else {
+                    showAlert('✗ ' + result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('Fehler: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        async function generateReport() {
+            const url = document.getElementById('url').value;
+            const token = document.getElementById('token').value;
+            const saveConfig = document.getElementById('saveConfig').checked;
+            
+            if (!url || !token) {
+                showAlert('Bitte füllen Sie alle Felder aus!', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            document.getElementById('reportSummary').style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/generate-report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url, token, save_config: saveConfig })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentReport = result.report;
+                    displayReport(result.report);
+                    showAlert('✓ Bericht erfolgreich erstellt!', 'success');
+                } else {
+                    showAlert('✗ ' + result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('Fehler: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function displayReport(report) {
+            const stats = report.statistics;
+            const statsGrid = document.getElementById('statsGrid');
+            
+            statsGrid.innerHTML = `
+                <div class="stat-box">
+                    <div class="number">${stats.total_components}</div>
+                    <div class="label">Komponenten</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">${stats.total_entities}</div>
+                    <div class="label">Entitäten</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">${stats.total_services}</div>
+                    <div class="label">Services</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">${stats.total_domains}</div>
+                    <div class="label">Domains</div>
+                </div>
+            `;
+            
+            document.getElementById('reportSummary').style.display = 'block';
+        }
+        
+        async function downloadReport(format) {
+            if (!currentReport) {
+                showAlert('Bitte generieren Sie zuerst einen Bericht!', 'error');
+                return;
+            }
+            
+            const url = document.getElementById('url').value;
+            const token = document.getElementById('token').value;
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/api/download-report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url, token, format })
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = `ha_overview.${format}`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(downloadUrl);
+                    document.body.removeChild(a);
+                    
+                    showAlert('✓ Download gestartet!', 'success');
+                } else {
+                    showAlert('✗ Download fehlgeschlagen', 'error');
+                }
+            } catch (error) {
+                showAlert('Fehler: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+    </script>
+</body>
+</html>
