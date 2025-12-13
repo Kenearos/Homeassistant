@@ -38,31 +38,44 @@ class HomeAssistantOverview:
             print(f"✗ Verbindungsfehler: {e}")
             return False
     
+    def _safe_request(self, endpoint):
+        """Sichere API-Anfrage mit Error-Handling"""
+        try:
+            response = requests.get(f"{self.url}{endpoint}", headers=self.headers, timeout=30)
+            if response.status_code == 401:
+                raise Exception("Token ungültig oder abgelaufen")
+            if response.status_code == 403:
+                raise Exception("Zugriff verweigert - Token hat keine Berechtigung")
+            if response.status_code != 200:
+                raise Exception(f"API-Fehler: HTTP {response.status_code}")
+            return response.json()
+        except requests.exceptions.JSONDecodeError as e:
+            raise Exception(f"Ungültige API-Antwort (kein JSON): {str(e)[:100]}")
+        except requests.exceptions.Timeout:
+            raise Exception("Zeitüberschreitung - Home Assistant antwortet nicht")
+        except requests.exceptions.ConnectionError:
+            raise Exception("Verbindungsfehler - Home Assistant nicht erreichbar")
+
     def get_config(self):
         """Hole die Konfiguration"""
-        response = requests.get(f"{self.url}/api/config", headers=self.headers)
-        return response.json()
-    
+        return self._safe_request("/api/config")
+
     def get_components(self):
         """Hole alle installierten Komponenten/Integrationen"""
-        response = requests.get(f"{self.url}/api/config/core", headers=self.headers)
-        data = response.json()
+        data = self._safe_request("/api/config/core")
         return data.get('components', [])
-    
+
     def get_states(self):
         """Hole alle Entitäten mit ihren Zuständen"""
-        response = requests.get(f"{self.url}/api/states", headers=self.headers)
-        return response.json()
-    
+        return self._safe_request("/api/states")
+
     def get_services(self):
         """Hole alle verfügbaren Services"""
-        response = requests.get(f"{self.url}/api/services", headers=self.headers)
-        return response.json()
-    
+        return self._safe_request("/api/services")
+
     def get_events(self):
         """Hole alle verfügbaren Events"""
-        response = requests.get(f"{self.url}/api/events", headers=self.headers)
-        return response.json()
+        return self._safe_request("/api/events")
     
     def analyze_entities(self, states):
         """Analysiere Entitäten nach Domains"""
