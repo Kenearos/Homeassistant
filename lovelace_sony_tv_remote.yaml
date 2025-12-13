@@ -1,0 +1,593 @@
+# Sony Bravia TV Fernbedienung - Lovelace Karte
+# =============================================
+# ANLEITUNG:
+# 1. Ersetze "media_player.sony_bravia_tv" durch deine echte Entity-ID
+# 2. Kopiere den Code ab "type: picture-elements" in dein Dashboard
+#    (Dashboard bearbeiten -> + Karte hinzufuegen -> YAML zeigen)
+#
+# Um deine Entity-ID zu finden:
+#   Home Assistant -> Entwicklerwerkzeuge -> Zustaende -> "media_player" eintippen
+# =============================================
+
+type: vertical-stack
+cards:
+  # TV Status & Info
+  - type: entities
+    title: "Sony Bravia TV"
+    entities:
+      - entity: media_player.sony_bravia_tv
+        name: "TV Status"
+    state_color: true
+
+  # Fernbedienung
+  - type: grid
+    columns: 3
+    square: false
+    cards:
+      # Power Button
+      - type: button
+        name: "Power"
+        icon: mdi:power
+        tap_action:
+          action: call-service
+          service: media_player.toggle
+          target:
+            entity_id: media_player.sony_bravia_tv
+        hold_action:
+          action: call-service
+          service: media_player.turn_off
+          target:
+            entity_id: media_player.sony_bravia_tv
+        icon_height: 40px
+
+      # Home Button
+      - type: button
+        name: "Home"
+        icon: mdi:home
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: HOME
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 40px
+
+      # Source/Input
+      - type: button
+        name: "Input"
+        icon: mdi:import
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: INPUT
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 40px
+
+      # --- Navigation ---
+      # Leer
+      - type: button
+        name: ""
+        icon: ""
+        tap_action:
+          action: none
+
+      # Hoch
+      - type: button
+        name: ""
+        icon: mdi:chevron-up
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: UP
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 50px
+
+      # Leer
+      - type: button
+        name: ""
+        icon: ""
+        tap_action:
+          action: none
+
+      # Links
+      - type: button
+        name: ""
+        icon: mdi:chevron-left
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: LEFT
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 50px
+
+      # OK/Enter
+      - type: button
+        name: "OK"
+        icon: mdi:checkbox-blank-circle
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: CONFIRM
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 50px
+
+      # Rechts
+      - type: button
+        name: ""
+        icon: mdi:chevron-right
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: RIGHT
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 50px
+
+      # Leer
+      - type: button
+        name: ""
+        icon: ""
+        tap_action:
+          action: none
+
+      # Runter
+      - type: button
+        name: ""
+        icon: mdi:chevron-down
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: DOWN
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 50px
+
+      # Leer
+      - type: button
+        name: ""
+        icon: ""
+        tap_action:
+          action: none
+
+      # --- Zurueck/Options ---
+      # Back
+      - type: button
+        name: "Zurueck"
+        icon: mdi:arrow-left
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: RETURN
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 40px
+
+      # Options/Menu
+      - type: button
+        name: "Menu"
+        icon: mdi:menu
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: OPTIONS
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 40px
+
+      # Guide/EPG
+      - type: button
+        name: "Guide"
+        icon: mdi:television-guide
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: GUIDE
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 40px
+
+  # Lautstaerke & Kanaele
+  - type: grid
+    columns: 4
+    square: false
+    cards:
+      # Vol+
+      - type: button
+        name: "Vol+"
+        icon: mdi:volume-plus
+        tap_action:
+          action: call-service
+          service: media_player.volume_up
+          target:
+            entity_id: media_player.sony_bravia_tv
+        icon_height: 40px
+
+      # Vol-
+      - type: button
+        name: "Vol-"
+        icon: mdi:volume-minus
+        tap_action:
+          action: call-service
+          service: media_player.volume_down
+          target:
+            entity_id: media_player.sony_bravia_tv
+        icon_height: 40px
+
+      # CH+
+      - type: button
+        name: "CH+"
+        icon: mdi:chevron-up-box
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: CHANNEL_UP
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 40px
+
+      # CH-
+      - type: button
+        name: "CH-"
+        icon: mdi:chevron-down-box
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: CHANNEL_DOWN
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 40px
+
+      # Mute
+      - type: button
+        name: "Mute"
+        icon: mdi:volume-mute
+        tap_action:
+          action: call-service
+          service: media_player.volume_mute
+          data:
+            is_volume_muted: true
+          target:
+            entity_id: media_player.sony_bravia_tv
+        icon_height: 40px
+
+      # Leer
+      - type: button
+        name: ""
+        icon: ""
+        tap_action:
+          action: none
+
+      # Leer
+      - type: button
+        name: ""
+        icon: ""
+        tap_action:
+          action: none
+
+      # Leer
+      - type: button
+        name: ""
+        icon: ""
+        tap_action:
+          action: none
+
+  # Mediensteuerung
+  - type: grid
+    columns: 5
+    square: false
+    cards:
+      # Rewind
+      - type: button
+        name: ""
+        icon: mdi:rewind
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: REWIND
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 35px
+
+      # Play
+      - type: button
+        name: ""
+        icon: mdi:play
+        tap_action:
+          action: call-service
+          service: media_player.media_play
+          target:
+            entity_id: media_player.sony_bravia_tv
+        icon_height: 35px
+
+      # Pause
+      - type: button
+        name: ""
+        icon: mdi:pause
+        tap_action:
+          action: call-service
+          service: media_player.media_pause
+          target:
+            entity_id: media_player.sony_bravia_tv
+        icon_height: 35px
+
+      # Stop
+      - type: button
+        name: ""
+        icon: mdi:stop
+        tap_action:
+          action: call-service
+          service: media_player.media_stop
+          target:
+            entity_id: media_player.sony_bravia_tv
+        icon_height: 35px
+
+      # Fast Forward
+      - type: button
+        name: ""
+        icon: mdi:fast-forward
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: FORWARD
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 35px
+
+  # Farbtasten & Apps
+  - type: grid
+    columns: 4
+    square: false
+    cards:
+      # Rot
+      - type: button
+        name: ""
+        icon: mdi:rectangle
+        styles:
+          icon:
+            - color: red
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: RED
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 30px
+
+      # Gruen
+      - type: button
+        name: ""
+        icon: mdi:rectangle
+        styles:
+          icon:
+            - color: green
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: GREEN
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 30px
+
+      # Gelb
+      - type: button
+        name: ""
+        icon: mdi:rectangle
+        styles:
+          icon:
+            - color: yellow
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: YELLOW
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 30px
+
+      # Blau
+      - type: button
+        name: ""
+        icon: mdi:rectangle
+        styles:
+          icon:
+            - color: blue
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: BLUE
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 30px
+
+  # Schnellzugriff Apps (optional)
+  - type: grid
+    columns: 4
+    square: false
+    cards:
+      # Netflix
+      - type: button
+        name: "Netflix"
+        icon: mdi:netflix
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: NETFLIX
+          target:
+            entity_id: remote.sony_bravia_tv
+        icon_height: 35px
+
+      # YouTube
+      - type: button
+        name: "YouTube"
+        icon: mdi:youtube
+        tap_action:
+          action: call-service
+          service: media_player.select_source
+          data:
+            source: "YouTube"
+          target:
+            entity_id: media_player.sony_bravia_tv
+        icon_height: 35px
+
+      # Prime Video
+      - type: button
+        name: "Prime"
+        icon: mdi:amazon
+        tap_action:
+          action: call-service
+          service: media_player.select_source
+          data:
+            source: "Prime Video"
+          target:
+            entity_id: media_player.sony_bravia_tv
+        icon_height: 35px
+
+      # Disney+
+      - type: button
+        name: "Disney+"
+        icon: mdi:movie-open
+        tap_action:
+          action: call-service
+          service: media_player.select_source
+          data:
+            source: "Disney+"
+          target:
+            entity_id: media_player.sony_bravia_tv
+        icon_height: 35px
+
+  # Nummernblock (optional - fuer Kanalwahl)
+  - type: grid
+    columns: 3
+    square: true
+    cards:
+      - type: button
+        name: "1"
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: NUM_1
+          target:
+            entity_id: remote.sony_bravia_tv
+
+      - type: button
+        name: "2"
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: NUM_2
+          target:
+            entity_id: remote.sony_bravia_tv
+
+      - type: button
+        name: "3"
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: NUM_3
+          target:
+            entity_id: remote.sony_bravia_tv
+
+      - type: button
+        name: "4"
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: NUM_4
+          target:
+            entity_id: remote.sony_bravia_tv
+
+      - type: button
+        name: "5"
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: NUM_5
+          target:
+            entity_id: remote.sony_bravia_tv
+
+      - type: button
+        name: "6"
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: NUM_6
+          target:
+            entity_id: remote.sony_bravia_tv
+
+      - type: button
+        name: "7"
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: NUM_7
+          target:
+            entity_id: remote.sony_bravia_tv
+
+      - type: button
+        name: "8"
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: NUM_8
+          target:
+            entity_id: remote.sony_bravia_tv
+
+      - type: button
+        name: "9"
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: NUM_9
+          target:
+            entity_id: remote.sony_bravia_tv
+
+      - type: button
+        name: ""
+        tap_action:
+          action: none
+
+      - type: button
+        name: "0"
+        tap_action:
+          action: call-service
+          service: remote.send_command
+          data:
+            command: NUM_0
+          target:
+            entity_id: remote.sony_bravia_tv
+
+      - type: button
+        name: ""
+        tap_action:
+          action: none
